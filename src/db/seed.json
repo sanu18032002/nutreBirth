@@ -1,0 +1,49 @@
+{
+    "foods": [
+        {
+            "id": "chicken_cooked",
+            "name": "Cooked Chicken Breast",
+            "per100g": {
+                "calories": 165,
+                "protein": 31,
+                "carbs": 0,
+                "fat": 3.6
+            },
+            "defaultServing": {
+                "label": "100 g",
+                "grams": 100
+            },
+            "source": "seed"
+        },
+        {
+            "id": "paneer",
+            "name": "Paneer (cottage cheese)",
+            "per100g": {
+                "calories": 265,
+                "protein": 18,
+                "carbs": 1.2,
+                "fat": 20
+            },
+            "defaultServing": {
+                "label": "100 g",
+                "grams": 100
+            },
+            "source": "seed"
+        },
+        {
+            "id": "roti",
+            "name": "Roti (whole wheat)",
+            "per100g": {
+                "calories": 275,
+                "protein": 9,
+                "carbs": 49,
+                "fat": 2.5
+            },
+            "defaultServing": {
+                "label": "1 roti (40 g)",
+                "grams": 40
+            },
+            "source": "seed"
+        }
+    ]
+}

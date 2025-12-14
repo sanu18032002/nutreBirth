@@ -1,0 +1,694 @@
+{
+    "dietPlans": [
+        {
+            "type": "vegetarian",
+            "calories": 1600,
+            "meals": [
+                {
+                    "mealNumber": 1,
+                    "items": [
+                        {
+                            "name": "Whey Protein",
+                            "quantity": "30 g",
+                            "protein": 24,
+                            "carbs": 2,
+                            "fats": 1,
+                            "calories": 120
+                        },
+                        {
+                            "name": "Rolled Oats",
+                            "quantity": "25 g",
+                            "protein": 3,
+                            "carbs": 17,
+                            "fats": 2,
+                            "calories": 100
+                        },
+                        {
+                            "name": "Almonds",
+                            "quantity": "20 g",
+                            "protein": 4,
+                            "carbs": 2,
+                            "fats": 11,
+                            "calories": 120
+                        }
+                    ],
+                    "total": {
+                        "protein": 31,
+                        "carbs": 21,
+                        "fats": 14,
+                        "calories": 340
+                    }
+                },
+                {
+                    "mealNumber": 2,
+                    "items": [
+                        {
+                            "name": "Paneer",
+                            "quantity": "120 g",
+                            "protein": 22,
+                            "carbs": 7,
+                            "fats": 24,
+                            "calories": 340
+                        },
+                        {
+                            "name": "Broccoli (boiled)",
+                            "quantity": "150 g",
+                            "protein": 5,
+                            "carbs": 10,
+                            "fats": 1,
+                            "calories": 70
+                        },
+                        {
+                            "name": "Olive Oil",
+                            "quantity": "10 g",
+                            "protein": 0,
+                            "carbs": 0,
+                            "fats": 10,
+                            "calories": 90
+                        }
+                    ],
+                    "total": {
+                        "protein": 27,
+                        "carbs": 17,
+                        "fats": 35,
+                        "calories": 500
+                    }
+                },
+                {
+                    "mealNumber": 3,
+                    "items": [
+                        {
+                            "name": "Soya Chunks (raw)",
+                            "quantity": "40 g",
+                            "protein": 21,
+                            "carbs": 12,
+                            "fats": 1,
+                            "calories": 145
+                        },
+                        {
+                            "name": "Zucchini + Spinach",
+                            "quantity": "200 g",
+                            "protein": 6,
+                            "carbs": 10,
+                            "fats": 1,
+                            "calories": 70
+                        },
+                        {
+                            "name": "Walnuts",
+                            "quantity": "15 g",
+                            "protein": 3,
+                            "carbs": 2,
+                            "fats": 10,
+                            "calories": 100
+                        }
+                    ],
+                    "total": {
+                        "protein": 30,
+                        "carbs": 24,
+                        "fats": 12,
+                        "calories": 315
+                    }
+                },
+                {
+                    "mealNumber": 4,
+                    "items": [
+                        {
+                            "name": "Greek Yogurt",
+                            "quantity": "200 g",
+                            "protein": 20,
+                            "carbs": 10,
+                            "fats": 4,
+                            "calories": 150
+                        },
+                        {
+                            "name": "Peanut Butter",
+                            "quantity": "20 g",
+                            "protein": 5,
+                            "carbs": 6,
+                            "fats": 11,
+                            "calories": 130
+                        }
+                    ],
+                    "total": {
+                        "protein": 25,
+                        "carbs": 16,
+                        "fats": 15,
+                        "calories": 280
+                    }
+                }
+            ]
+        },
+        {
+            "type": "vegetarian",
+            "calories": 1800,
+            "meals": [
+                {
+                    "mealNumber": 1,
+                    "items": [
+                        {
+                            "name": "Whey Protein",
+                            "quantity": "30 g",
+                            "protein": 24,
+                            "carbs": 2,
+                            "fats": 1,
+                            "calories": 120
+                        },
+                        {
+                            "name": "Rolled Oats",
+                            "quantity": "30 g",
+                            "protein": 4,
+                            "carbs": 20,
+                            "fats": 2,
+                            "calories": 120
+                        },
+                        {
+                            "name": "Almonds",
+                            "quantity": "20 g",
+                            "protein": 4,
+                            "carbs": 2,
+                            "fats": 11,
+                            "calories": 120
+                        }
+                    ],
+                    "total": {
+                        "protein": 32,
+                        "carbs": 24,
+                        "fats": 14,
+                        "calories": 360
+                    }
+                },
+                {
+                    "mealNumber": 2,
+                    "items": [
+                        {
+                            "name": "Paneer",
+                            "quantity": "150 g",
+                            "protein": 27,
+                            "carbs": 9,
+                            "fats": 30,
+                            "calories": 420
+                        },
+                        {
+                            "name": "Cauliflower (boiled)",
+                            "quantity": "200 g",
+                            "protein": 6,
+                            "carbs": 10,
+                            "fats": 1,
+                            "calories": 70
+                        },
+                        {
+                            "name": "Olive Oil",
+                            "quantity": "10 g",
+                            "protein": 0,
+                            "carbs": 0,
+                            "fats": 10,
+                            "calories": 90
+                        }
+                    ],
+                    "total": {
+                        "protein": 33,
+                        "carbs": 19,
+                        "fats": 41,
+                        "calories": 580
+                    }
+                },
+                {
+                    "mealNumber": 3,
+                    "items": [
+                        {
+                            "name": "Soya Chunks (raw)",
+                            "quantity": "50 g",
+                            "protein": 26,
+                            "carbs": 15,
+                            "fats": 1,
+                            "calories": 180
+                        },
+                        {
+                            "name": "Cucumber + Capsicum",
+                            "quantity": "200 g",
+                            "protein": 5,
+                            "carbs": 10,
+                            "fats": 0,
+                            "calories": 60
+                        },
+                        {
+                            "name": "Walnuts",
+                            "quantity": "15 g",
+                            "protein": 3,
+                            "carbs": 2,
+                            "fats": 10,
+                            "calories": 100
+                        }
+                    ],
+                    "total": {
+                        "protein": 34,
+                        "carbs": 27,
+                        "fats": 11,
+                        "calories": 340
+                    }
+                },
+                {
+                    "mealNumber": 4,
+                    "items": [
+                        {
+                            "name": "Greek Yogurt",
+                            "quantity": "250 g",
+                            "protein": 25,
+                            "carbs": 12,
+                            "fats": 5,
+                            "calories": 190
+                        },
+                        {
+                            "name": "Peanut Butter",
+                            "quantity": "20 g",
+                            "protein": 5,
+                            "carbs": 6,
+                            "fats": 11,
+                            "calories": 130
+                        }
+                    ],
+                    "total": {
+                        "protein": 30,
+                        "carbs": 18,
+                        "fats": 16,
+                        "calories": 320
+                    }
+                }
+            ]
+        },
+        {
+            "type": "vegetarian",
+            "calories": 2000,
+            "meals": [
+                {
+                    "mealNumber": 1,
+                    "items": [
+                        {
+                            "name": "Whey Protein",
+                            "quantity": "40 g",
+                            "protein": 32,
+                            "carbs": 2,
+                            "fats": 1,
+                            "calories": 160
+                        },
+                        {
+                            "name": "Rolled Oats",
+                            "quantity": "35 g",
+                            "protein": 4,
+                            "carbs": 24,
+                            "fats": 3,
+                            "calories": 140
+                        },
+                        {
+                            "name": "Almonds",
+                            "quantity": "20 g",
+                            "protein": 4,
+                            "carbs": 2,
+                            "fats": 11,
+                            "calories": 120
+                        }
+                    ],
+                    "total": {
+                        "protein": 40,
+                        "carbs": 28,
+                        "fats": 15,
+                        "calories": 420
+                    }
+                },
+                {
+                    "mealNumber": 2,
+                    "items": [
+                        {
+                            "name": "Paneer",
+                            "quantity": "200 g",
+                            "protein": 36,
+                            "carbs": 12,
+                            "fats": 40,
+                            "calories": 560
+                        },
+                        {
+                            "name": "Green Beans (boiled)",
+                            "quantity": "150 g",
+                            "protein": 5,
+                            "carbs": 12,
+                            "fats": 0,
+                            "calories": 60
+                        },
+                        {
+                            "name": "Olive Oil",
+                            "quantity": "10 g",
+                            "protein": 0,
+                            "carbs": 0,
+                            "fats": 10,
+                            "calories": 90
+                        }
+                    ],
+                    "total": {
+                        "protein": 41,
+                        "carbs": 24,
+                        "fats": 50,
+                        "calories": 710
+                    }
+                },
+                {
+                    "mealNumber": 3,
+                    "items": [
+                        {
+                            "name": "Soya Chunks (raw)",
+                            "quantity": "60 g",
+                            "protein": 31,
+                            "carbs": 18,
+                            "fats": 1,
+                            "calories": 215
+                        },
+                        {
+                            "name": "Spinach + Mushroom",
+                            "quantity": "200 g",
+                            "protein": 7,
+                            "carbs": 10,
+                            "fats": 1,
+                            "calories": 70
+                        },
+                        {
+                            "name": "Walnuts",
+                            "quantity": "20 g",
+                            "protein": 4,
+                            "carbs": 2,
+                            "fats": 14,
+                            "calories": 150
+                        }
+                    ],
+                    "total": {
+                        "protein": 42,
+                        "carbs": 30,
+                        "fats": 16,
+                        "calories": 435
+                    }
+                },
+                {
+                    "mealNumber": 4,
+                    "items": [
+                        {
+                            "name": "Greek Yogurt",
+                            "quantity": "250 g",
+                            "protein": 25,
+                            "carbs": 12,
+                            "fats": 5,
+                            "calories": 190
+                        },
+                        {
+                            "name": "Peanut Butter",
+                            "quantity": "25 g",
+                            "protein": 6,
+                            "carbs": 7,
+                            "fats": 14,
+                            "calories": 160
+                        }
+                    ],
+                    "total": {
+                        "protein": 31,
+                        "carbs": 19,
+                        "fats": 19,
+                        "calories": 350
+                    }
+                }
+            ]
+        },
+        {
+            "type": "non-vegetarian",
+            "calories": 1600,
+            "meals": [
+                {
+                    "mealNumber": 1,
+                    "items": [
+                        {
+                            "name": "Whey Protein Isolate",
+                            "quantity": "30 g",
+                            "protein": 25,
+                            "carbs": 2,
+                            "fats": 0,
+                            "calories": 110
+                        },
+                        {
+                            "name": "Rolled Oats",
+                            "quantity": "25 g",
+                            "protein": 3,
+                            "carbs": 16,
+                            "fats": 2,
+                            "calories": 95
+                        },
+                        {
+                            "name": "Almonds",
+                            "quantity": "10 g",
+                            "protein": 2,
+                            "carbs": 1,
+                            "fats": 5,
+                            "calories": 60
+                        }
+                    ],
+                    "total": {
+                        "protein": 30,
+                        "carbs": 19,
+                        "fats": 7,
+                        "calories": 265
+                    }
+                },
+                {
+                    "mealNumber": 2,
+                    "items": [
+                        {
+                            "name": "Chicken Breast (cooked)",
+                            "quantity": "120 g",
+                            "protein": 36,
+                            "carbs": 0,
+                            "fats": 3,
+                            "calories": 190
+                        },
+                        {
+                            "name": "Veggie Salad + Olive Oil",
+                            "quantity": "200 g + 10 g",
+                            "protein": 5,
+                            "carbs": 7,
+                            "fats": 12,
+                            "calories": 140
+                        }
+                    ],
+                    "total": {
+                        "protein": 41,
+                        "carbs": 7,
+                        "fats": 15,
+                        "calories": 330
+                    }
+                },
+                {
+                    "mealNumber": 3,
+                    "items": [
+                        {
+                            "name": "Fish (Rohu/Salmon, grilled)",
+                            "quantity": "100 g",
+                            "protein": 21,
+                            "carbs": 0,
+                            "fats": 7,
+                            "calories": 150
+                        },
+                        {
+                            "name": "Sweet Potato (boiled)",
+                            "quantity": "100 g",
+                            "protein": 2,
+                            "carbs": 20,
+                            "fats": 0,
+                            "calories": 90
+                        },
+                        {
+                            "name": "Walnuts",
+                            "quantity": "10 g",
+                            "protein": 2,
+                            "carbs": 1,
+                            "fats": 7,
+                            "calories": 65
+                        }
+                    ],
+                    "total": {
+                        "protein": 25,
+                        "carbs": 21,
+                        "fats": 14,
+                        "calories": 305
+                    }
+                },
+                {
+                    "mealNumber": 4,
+                    "items": [
+                        {
+                            "name": "Whole Eggs",
+                            "quantity": "2",
+                            "protein": 12,
+                            "carbs": 0,
+                            "fats": 10,
+                            "calories": 140
+                        },
+                        {
+                            "name": "Egg Whites",
+                            "quantity": "100 g",
+                            "protein": 11,
+                            "carbs": 1,
+                            "fats": 0,
+                            "calories": 50
+                        },
+                        {
+                            "name": "Greek Yogurt",
+                            "quantity": "100 g",
+                            "protein": 10,
+                            "carbs": 5,
+                            "fats": 2,
+                            "calories": 70
+                        }
+                    ],
+                    "total": {
+                        "protein": 33,
+                        "carbs": 6,
+                        "fats": 12,
+                        "calories": 260
+                    }
+                }
+            ]
+        },
+        {
+            "type": "non-vegetarian",
+            "calories": 1800,
+            "meals": [
+                {
+                    "mealNumber": 1,
+                    "items": [
+                        {
+                            "name": "Whey Protein Isolate",
+                            "quantity": "30 g",
+                            "protein": 25,
+                            "carbs": 2,
+                            "fats": 0,
+                            "calories": 110
+                        },
+                        {
+                            "name": "Rolled Oats",
+                            "quantity": "30 g",
+                            "protein": 4,
+                            "carbs": 20,
+                            "fats": 2,
+                            "calories": 120
+                        },
+                        {
+                            "name": "Almonds",
+                            "quantity": "15 g",
+                            "protein": 3,
+                            "carbs": 1,
+                            "fats": 8,
+                            "calories": 90
+                        }
+                    ],
+                    "total": {
+                        "protein": 32,
+                        "carbs": 23,
+                        "fats": 10,
+                        "calories": 320
+                    }
+                },
+                {
+                    "mealNumber": 2,
+                    "items": [
+                        {
+                            "name": "Chicken Breast (cooked)",
+                            "quantity": "150 g",
+                            "protein": 45,
+                            "carbs": 0,
+                            "fats": 4,
+                            "calories": 240
+                        },
+                        {
+                            "name": "Veggie Salad + Olive Oil",
+                            "quantity": "250 g + 10 g",
+                            "protein": 6,
+                            "carbs": 8,
+                            "fats": 12,
+                            "calories": 150
+                        }
+                    ],
+                    "total": {
+                        "protein": 51,
+                        "carbs": 8,
+                        "fats": 16,
+                        "calories": 390
+                    }
+                },
+                {
+                    "mealNumber": 3,
+                    "items": [
+                        {
+                            "name": "Fish (Rohu/Salmon, grilled)",
+                            "quantity": "120 g",
+                            "protein": 25,
+                            "carbs": 0,
+                            "fats": 8,
+                            "calories": 190
+                        },
+                        {
+                            "name": "Sweet Potato (boiled)",
+                            "quantity": "120 g",
+                            "protein": 3,
+                            "carbs": 24,
+                            "fats": 0,
+                            "calories": 110
+                        },
+                        {
+                            "name": "Walnuts",
+                            "quantity": "15 g",
+                            "protein": 3,
+                            "carbs": 2,
+                            "fats": 10,
+                            "calories": 100
+                        }
+                    ],
+                    "total": {
+                        "protein": 31,
+                        "carbs": 26,
+                        "fats": 18,
+                        "calories": 400
+                    }
+                },
+                {
+                    "mealNumber": 4,
+                    "items": [
+                        {
+                            "name": "Whole Eggs",
+                            "quantity": "2",
+                            "protein": 12,
+                            "carbs": 0,
+                            "fats": 10,
+                            "calories": 140
+                        },
+                        {
+                            "name": "Egg Whites",
+                            "quantity": "150 g",
+                            "protein": 16,
+                            "carbs": 1,
+                            "fats": 0,
+                            "calories": 70
+                        },
+                        {
+                            "name": "Greek Yogurt",
+                            "quantity": "150 g",
+                            "protein": 15,
+                            "carbs": 8,
+                            "fats": 3,
+                            "calories": 110
+                        }
+                    ],
+                    "total": {
+                        "protein": 43,
+                        "carbs": 9,
+                        "fats": 13,
+                        "calories": 320
+                    }
+                }
+            ]
+        }
+    ]
+}

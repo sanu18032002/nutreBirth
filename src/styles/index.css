@@ -1,0 +1,297 @@
+/* ============================= */
+/* Theme variables */
+/* ============================= */
+
+:root {
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+
+    --text-primary: #1f2937;
+    --text-muted: #6b7280;
+
+    --brand: #14b8a6;
+    --brand-hover: #0f766e;
+
+    --protein: #22c55e;
+    --consumed: #3b82f6;
+
+    --table-header-bg: #f1f5f9;
+    --table-total-bg: #e5e7eb;
+
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    /* nav */
+    --nav-link: #374151;
+    /* gray-700 */
+    --nav-link-hover: #0ea5a0;
+    /* brand */
+    --nav-link-active: #0ea5a0;
+
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --card-bg: #020617;
+    --border: #1e293b;
+
+    --text-primary: #e5e7eb;
+    --text-muted: #94a3b8;
+
+    --brand: #2dd4bf;
+    --brand-hover: #14b8a6;
+
+    --protein: #4ade80;
+    --consumed: #60a5fa;
+
+    --table-header-bg: #020617;
+    --table-total-bg: #020617;
+
+    --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+    --nav-link: #cbd5f5;
+    --nav-link-hover: #2dd4bf;
+    --nav-link-active: #2dd4bf;
+
+}
+
+
+/* ============================= */
+/* Global reset & base styles */
+/* ============================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================= */
+/* Layout */
+/* ============================= */
+
+.app-root {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* ============================= */
+/* Typography */
+/* ============================= */
+
+h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ============================= */
+/* Navigation (optional polish) */
+/* ============================= */
+
+nav a {
+    color: var(--nav-link);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: var(--nav-link-hover);
+}
+
+nav a.active {
+    color: var(--nav-link-active);
+    font-weight: 600;
+}
+
+
+/* ============================= */
+/* Cards */
+/* ============================= */
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: var(--card-shadow);
+
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+
+button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #f3f4f6;
+}
+
+button.primary {
+    background: var(--brand);
+    color: white;
+    border: none;
+}
+
+button.primary:hover {
+    background: var(--brand-hover);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ============================= */
+/* Forms */
+/* ============================= */
+
+input,
+select {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #0ea5a0;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+/* ============================= */
+/* Tables */
+/* ============================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 8px;
+    border-top: 1px solid var(--border);
+}
+
+th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--table-header-bg);
+}
+
+tr.total {
+    font-weight: 600;
+    background: var(--table-total-bg);
+}
+
+/* ============================= */
+/* Modal helpers (used by ProfileModal) */
+/* ============================= */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: grid;
+    place-items: center;
+    z-index: 50;
+}
+
+/* ============================= */
+/* Utility */
+/* ============================= */
+
+.mt-1 {
+    margin-top: 4px;
+}
+
+.mt-2 {
+    margin-top: 8px;
+}
+
+.mt-3 {
+    margin-top: 12px;
+}
+
+.mt-4 {
+    margin-top: 16px;
+}
+
+.mt-5 {
+    margin-top: 20px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text-muted {
+    color: var(--text-muted);
+    font-size: 13px;
+}

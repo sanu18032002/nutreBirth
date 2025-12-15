@@ -3,31 +3,34 @@
 /* ============================= */
 
 :root {
-    --bg: #f8fafc;
+    /* Background: A very pale, soothing mint cream */
+    --bg: #F2F9F6;
     --card-bg: #ffffff;
-    --border: #e5e7eb;
+    /* Soft green border for subtle separation */
+    --border: #dbece5;
 
-    --text-primary: #1f2937;
-    --text-muted: #6b7280;
+    --text-primary: #2d3748;
+    --text-muted: #718096;
 
-    --brand: #14b8a6;
-    --brand-hover: #0f766e;
+    /* Vibrant Emerald Gradient */
+    --brand: #10b981;
+    --brand-hover: #059669;
+    --brand-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
 
     --protein: #22c55e;
-    --consumed: #3b82f6;
+    --consumed: #0ea5e9;
 
-    --table-header-bg: #f1f5f9;
-    --table-total-bg: #e5e7eb;
+    --table-header-bg: #e6fffa;
+    /* Light mint header */
+    --table-total-bg: #f0fdf4;
 
-    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Green-tinted shadow for "glow" effect */
+    --card-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05);
 
-    /* nav */
-    --nav-link: #374151;
-    /* gray-700 */
-    --nav-link-hover: #0ea5a0;
-    /* brand */
-    --nav-link-active: #0ea5a0;
-
+    /* Nav */
+    --nav-link: #4a5568;
+    --nav-link-hover: #10b981;
+    --nav-link-active: #059669;
 }
 
 /* Dark mode */
@@ -72,6 +75,7 @@ body {
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-image: radial-gradient(at top left, rgba(255, 255, 255, 0.8) 0%, transparent 50%);
 }
 
 /* ============================= */
@@ -145,10 +149,14 @@ nav a.active {
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: 16px;
+    padding: 24px;
     box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease;
+}
 
+.card:hover {
+    transform: translateY(-2px);
 }
 
 /* ============================= */
@@ -159,7 +167,7 @@ button {
     padding: 8px 14px;
     border-radius: 6px;
     border: 1px solid #d1d5db;
-    background: #ffffff;
+    background: #FF9800;
     cursor: pointer;
     font-size: 14px;
 }
@@ -169,13 +177,19 @@ button:hover {
 }
 
 button.primary {
-    background: var(--brand);
+    background: var(--brand-gradient, var(--brand));
     color: white;
     border: none;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* button shadow */
 }
 
 button.primary:hover {
     background: var(--brand-hover);
+    filter: brightness(1.1);
+    /* Simple hover effect for gradients */
+    transform: translateY(-1px);
 }
 
 button:disabled {
@@ -190,16 +204,26 @@ button:disabled {
 input,
 select {
     width: 100%;
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 6px;
-    border: 1px solid #d1d5db;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+
     font-size: 14px;
+    cursor: pointer;
+}
+
+select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
 }
 
 input:focus,
 select:focus {
     outline: none;
-    border-color: #0ea5a0;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
 }
 
 label {
@@ -221,16 +245,36 @@ table {
 
 th,
 td {
-    padding: 8px;
-    border-top: 1px solid var(--border);
+    padding: 12px 8px;
+    /* Added a bit more space */
+    border-bottom: 1px solid var(--border);
+    /* Cleaner bottom border */
+    /* DEFAULT: Right align everything (best for numbers) */
+    text-align: right;
 }
 
 th {
-    text-align: left;
-    font-size: 12px;
-    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11px;
     color: var(--text-muted);
+    /* Remove the border lines for a cleaner look */
+    border-top: none;
+    border-bottom: 2px solid var(--border);
+    padding: 12px 8px;
     background: var(--table-header-bg);
+}
+
+/* EXCEPTION: Force the first column (Food Item) to stick to the left */
+th:first-child,
+td:first-child {
+    text-align: left;
+}
+
+/* Optional: Center the "Qty" column if you prefer */
+th:nth-child(2),
+td:nth-child(2) {
+    text-align: center;
 }
 
 tr.total {

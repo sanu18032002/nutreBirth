@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { db, seedIfEmpty } from '../db'
 import type { Meal, FoodItem, UserProfile, DietPlan } from '../types'
 import ProgressCard from '../components/ProgressCard'
@@ -135,12 +135,12 @@ export default function Dashboard() {
                     gap: 16,
                 }}
             >
-                <ProgressCard
+                {/* <ProgressCard
                     label="Protein (g)"
                     value={consumedProtein}
                     target={targets.protein}
                     onClick={() => setShowProfileModal(true)}
-                />
+                /> */}
 
                 <div className="card">
                     <span className="text-muted">Targets</span>
@@ -195,7 +195,7 @@ export default function Dashboard() {
                             </p>
                         </div>
 
-                        <div className="card">
+                        {/* <div className="card">
                             <span className="text-muted">Visual</span>
                             <div style={{ marginTop: 12 }}>
                                 <Bar
@@ -247,7 +247,7 @@ export default function Dashboard() {
 
 
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 ) : (
                     <p className="text-muted mt-2">

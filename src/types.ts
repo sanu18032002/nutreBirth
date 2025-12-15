@@ -1,5 +1,3 @@
-// src/types.ts
-
 // Food stored in IndexedDB (used for meal logs)
 // This is what your meal-logger & consumedProtein logic expects.
 export type DBFoodPer100g = {

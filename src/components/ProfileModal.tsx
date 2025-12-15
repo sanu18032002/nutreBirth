@@ -32,7 +32,6 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
       setActivity(initialProfile.activityLevel ?? activity)
       setDietType(initialProfile.dietType ?? dietType)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialProfile])
 
   async function handleSave(e: React.FormEvent) {

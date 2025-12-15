@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import planSeedJson from '../db/plan_seed.json'
 import type { PlanSeed, DietPlan, Meal } from '../types'
 

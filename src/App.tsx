@@ -1,6 +1,8 @@
 import { Link, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import PlanViewer from './components/PlanViewer'
+import Login from './pages/Login'
+import RequireAuth from './components/RequireAuth'
 
 export default function App() {
     return (
@@ -71,8 +73,25 @@ export default function App() {
 
             <main>
                 <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/plans" element={<PlanViewer />} />
+                    <Route path="/login" element={<Login />} />
+
+                    <Route
+                        path="/"
+                        element={
+                            <RequireAuth>
+                                <Dashboard />
+                            </RequireAuth>
+                        }
+                    />
+
+                    <Route
+                        path="/plans"
+                        element={
+                            <RequireAuth>
+                                <PlanViewer />
+                            </RequireAuth>
+                        }
+                    />
                 </Routes>
             </main>
         </div>

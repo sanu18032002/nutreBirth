@@ -3,11 +3,14 @@ package com.nutreBirth.service.Service;
 import java.time.Instant;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nutreBirth.service.Entity.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -16,6 +19,26 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public Claims parse(String token) {
+        return Jwts.parser()
+                .verifyWith(getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String getUserId(String token) {
+        return parse(token).getSubject();
+    }
+
+    public String getPlan(String token) {
+        return parse(token).get("plan", String.class);
+    }
 
     private static final long EXPIRY_SECONDS = 60 * 60 * 24 * 7; // 7 days
 

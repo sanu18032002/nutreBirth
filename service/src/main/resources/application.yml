@@ -1,6 +1,8 @@
-spring.application.name=service
+spring:
+  application:
+    name: service
 google:
-  client-id: YOUR_GOOGLE_CLIENT_ID
+  client-id: 116813239738-cn4v34cmqpg79d28hrd0u4umask6l298.apps.googleusercontent.com
 
 jwt:
-  secret: change-this-to-very-long-secret
+  secret: 6e3ac27ef9fbe50bee53567bb3cf4b00544dbfc03674ed8cb55eaa56dc8babc05940136ae718e21beada4ae0ca5fcdd56e7f5e248055bc3841a5e2fa9fde3290

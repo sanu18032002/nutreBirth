@@ -10,4 +10,12 @@ public class AuthResponse {
         this.token = token;
         this.user = new UserResponse(user);
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public UserResponse getUser() {
+        return user;
+    }
 }

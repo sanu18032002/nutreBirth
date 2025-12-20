@@ -1,11 +1,9 @@
 export function authFetch(input: RequestInfo, init?: RequestInit) {
-    const token = localStorage.getItem('authToken')
-
     return fetch(input, {
         ...init,
+        credentials: 'include',
         headers: {
             ...(init?.headers || {}),
-            Authorization: `Bearer ${token}`,
         },
     })
 }

@@ -23,6 +23,29 @@ export type PlanFoodItem = {
     carbs: number;
     fats: number;
     calories: number;
+
+    // Optional micronutrients / metadata (ASCII keys; units in key name)
+    fiber_g?: number;
+    iron_mg?: number;
+    sodium_mg?: number;
+    calcium_mg?: number;
+    magnesium_mg?: number;
+    zinc_mg?: number;
+
+    vitA_ug?: number;
+    vitB1_mg?: number;
+    vitB2_mg?: number;
+    vitB3_mg?: number;
+    vitB5_mg?: number;
+    vitB6_mg?: number;
+    vitB9_ug?: number;
+    vitB12_ug?: number;
+    vitC_mg?: number;
+    vitD_IU?: number;
+    vitE_mg?: number;
+    vitK_ug?: number;
+
+    keyAntioxidant?: string;
 }
 
 export type Meal = {
@@ -33,6 +56,27 @@ export type Meal = {
         carbs: number;
         fats: number;
         calories: number;
+
+        // Optional micronutrient totals (if you choose to provide them in plan_seed.json)
+        fiber_g?: number;
+        iron_mg?: number;
+        sodium_mg?: number;
+        calcium_mg?: number;
+        magnesium_mg?: number;
+        zinc_mg?: number;
+
+        vitA_ug?: number;
+        vitB1_mg?: number;
+        vitB2_mg?: number;
+        vitB3_mg?: number;
+        vitB5_mg?: number;
+        vitB6_mg?: number;
+        vitB9_ug?: number;
+        vitB12_ug?: number;
+        vitC_mg?: number;
+        vitD_IU?: number;
+        vitE_mg?: number;
+        vitK_ug?: number;
     };
 };
 

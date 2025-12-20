@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { db, seedIfEmpty } from '../db'
-import type { Meal, FoodItem, UserProfile, DietPlan } from '../types'
+import type { Meal, FoodItem, UserProfile, DietPlan, PlanSeed } from '../types'
 import ProgressCard from '../components/ProgressCard'
 import ProfileModal from '../components/ProfileModal'
 import FullPlanTable from '../components/FullPlanTable'
@@ -19,7 +19,8 @@ export default function Dashboard() {
     const [targets, setTargets] = useState({ bmr: 0, tdee: 0, protein: 0 })
     const [recommendedPlan, setRecommendedPlan] = useState<DietPlan | null>(null)
 
-    const plans = (planSeedData as any).dietPlans as DietPlan[]
+    const seed = planSeedData as unknown as PlanSeed
+    const plans = seed.dietPlans ?? []
 
     useEffect(() => {
         ; (async () => {

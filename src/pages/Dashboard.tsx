@@ -52,6 +52,20 @@ export default function Dashboard() {
         })()
     }, [])
 
+    // Allow top-bar "Profile" action to open ProfileModal on Dashboard.
+    useEffect(() => {
+        try {
+            const url = new URL(window.location.href)
+            if (url.searchParams.get('profile') === '1') {
+                setShowProfileModal(true)
+                url.searchParams.delete('profile')
+                window.history.replaceState({}, '', url.toString())
+            }
+        } catch {
+            // ignore
+        }
+    }, [])
+
     async function onProfileSaved(p: UserProfile) {
         setProfile(p)
         setShowProfileModal(false)

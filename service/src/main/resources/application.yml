@@ -2,7 +2,15 @@ spring:
   application:
     name: service
 google:
-  client-id: 116813239738-cn4v34cmqpg79d28hrd0u4umask6l298.apps.googleusercontent.com
+  client-id: ${GOOGLE_CLIENT_ID:}
 
 jwt:
-  secret: 6e3ac27ef9fbe50bee53567bb3cf4b00544dbfc03674ed8cb55eaa56dc8babc05940136ae718e21beada4ae0ca5fcdd56e7f5e248055bc3841a5e2fa9fde3290
+  secret: ${JWT_SECRET:}
+
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+  auth:
+    cookie-name: ${APP_AUTH_COOKIE_NAME:nb_auth}
+    cookie-secure: ${APP_AUTH_COOKIE_SECURE:false}
+    cookie-same-site: ${APP_AUTH_COOKIE_SAME_SITE:Lax}

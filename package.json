@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "test": "vitest run"
     },
     "dependencies": {
         "@react-oauth/google": "^0.12.2",
@@ -25,6 +26,7 @@
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.18",
         "typescript": "^5.4.2",
+        "vitest": "^2.1.8",
         "vite": "^5.0.0"
     }
 }

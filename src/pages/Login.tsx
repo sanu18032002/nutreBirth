@@ -1,17 +1,20 @@
 import { GoogleLogin } from '@react-oauth/google'
+import { useNavigate } from 'react-router-dom'
 import { loginWithGoogle } from '../api/auth'
 
 export default function Login() {
+  const navigate = useNavigate()
 
   async function onSuccess(credentialResponse: any) {
     try {
+      // Clear any legacy token-based auth from older versions
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('user')
+
       const idToken = credentialResponse.credential
-      const data = await loginWithGoogle(idToken)
-
-      localStorage.setItem('authToken', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-
-      window.location.href = '/'
+      await loginWithGoogle(idToken)
+      // Backend sets an HttpOnly cookie; no token should be stored in localStorage.
+      navigate('/', { replace: true })
     } catch (err) {
       alert('Login failed')
     }

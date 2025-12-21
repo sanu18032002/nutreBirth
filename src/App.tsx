@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard'
 import PlanViewer from './components/PlanViewer'
 import Login from './pages/Login'
 import RequireAuth from './components/RequireAuth'
+import UserMenuDrawer from './components/UserMenuDrawer'
 
 export default function App() {
     return (
@@ -68,6 +69,7 @@ export default function App() {
                     {document.documentElement.dataset.theme === 'dark' ? '🌙' : '☀️'}
                 </button>
 
+                <UserMenuDrawer />
 
             </header>
 

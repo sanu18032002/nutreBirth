@@ -18,6 +18,13 @@ public class GoogleTokenVerifierService {
 
     public GoogleIdToken.Payload verify(String idTokenString) {
         try {
+            if (clientId == null || clientId.isBlank()) {
+                throw new IllegalStateException("Missing GOOGLE_CLIENT_ID (google.client-id)");
+            }
+            if (idTokenString == null || idTokenString.isBlank()) {
+                throw new IllegalArgumentException("Missing idToken");
+            }
+
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(),
                     new GsonFactory())

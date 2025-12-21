@@ -3,6 +3,18 @@ import foodMicrosSeed from '../db/food_micros_seed.json'
 
 type FoodMicrosRow = Record<string, unknown>
 
+// For tricky mismatches between plan item names and micros seed names.
+// Keys and values are normalized via normalizeFoodName().
+const NAME_ALIASES: Record<string, string> = {
+  // Plans often use generic names; micros data may be more specific.
+  'paneer': 'paneer full fat',
+  'greek yogurt': 'greek yogurt low fat',
+  'whole eggs': 'whole eggs boiled',
+  'egg whites': 'egg whites boiled',
+  'chicken breast': 'chicken breast cooked',
+  'fish': 'atlantic salmon cooked',
+}
+
 function normalizeFoodName(name: string): string {
   return name
     .toLowerCase()
@@ -71,7 +83,11 @@ for (const r of rows) {
 }
 
 export function microsForFoodName(name: string): Partial<PlanFoodItem> | undefined {
-  const key = normalizeFoodName(name)
+  const keyRaw = normalizeFoodName(name)
+
+  const alias = NAME_ALIASES[keyRaw]
+  const key = alias ? normalizeFoodName(alias) : keyRaw
+
   // exact normalized match first
   const exact = byName.get(key)
   if (exact) return exact

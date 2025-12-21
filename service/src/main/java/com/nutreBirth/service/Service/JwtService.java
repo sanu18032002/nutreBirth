@@ -21,6 +21,9 @@ public class JwtService {
     private String secret;
 
     private SecretKey getKey() {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("Missing JWT_SECRET (jwt.secret)");
+        }
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
@@ -52,7 +55,7 @@ public class JwtService {
                 .claim("plan", user.getPlan().name())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(EXPIRY_SECONDS)))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(getKey())
                 .compact();
     }
 }

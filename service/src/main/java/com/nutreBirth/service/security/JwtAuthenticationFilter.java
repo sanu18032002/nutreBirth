@@ -7,7 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.nutreBirth.service.Service.JwtService;
 
@@ -23,10 +22,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
-    @Value("${app.auth.cookie-name:nb_auth}")
-    private String cookieName;
-
-    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(
+            JwtService jwtService,
+            CustomUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
@@ -35,24 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
 
-        String jwt = null;
+        String jwt = extractJwtFromCookie(request);
 
-        final String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-        } else if (request.getCookies() != null) {
-            for (Cookie c : request.getCookies()) {
-                if (cookieName.equals(c.getName())) {
-                    jwt = c.getValue();
-                    break;
-                }
-            }
-        }
-
-        if (jwt == null || jwt.isBlank()) {
+        // No token → continue (SecurityConfig decides if endpoint is protected)
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -76,13 +62,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception ex) {
-            // A stale/invalid cookie should not prevent reaching public endpoints (e.g. /auth/google),
-            // and protected endpoints will still be rejected by Spring Security if no auth is set.
-            SecurityContextHolder.clearContext();
-            filterChain.doFilter(request, response);
+            // Invalid or expired token
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Extract JWT from HTTP-only cookie
+     */
+    private String extractJwtFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null)
+            return null;
+
+        for (Cookie cookie : cookies) {
+            if ("AUTH_TOKEN".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

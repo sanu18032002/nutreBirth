@@ -1,9 +1,13 @@
 package com.nutreBirth.service.controller;
 
+import java.time.Duration;
+import java.util.Map;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -13,9 +17,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.nutreBirth.service.Entity.User;
 import com.nutreBirth.service.Enum.PlanType;
 import com.nutreBirth.service.repo.UserRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.nutreBirth.service.Service.GoogleTokenVerifierService;
 import com.nutreBirth.service.Service.JwtService;
-import com.nutreBirth.service.dto.AuthResponse;
 import com.nutreBirth.service.dto.GoogleLoginRequest;
 
 @RestController
@@ -44,11 +50,8 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping(
-            value = "/google",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loginWithGoogle(@RequestBody GoogleLoginRequest request) {
+    @PostMapping(value = "/google", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> loginWithGoogle(@RequestBody GoogleLoginRequest request, HttpServletResponse response) {
 
         try {
             // Verify Google ID token (CRITICAL)
@@ -78,33 +81,25 @@ public class AuthController {
                         return userRepository.save(u);
                     });
 
-            // Issue YOUR JWT (not Google’s)
-            String jwt;
-            try {
-                jwt = jwtService.generate(user);
-            } catch (RuntimeException ex) {
-                // This is usually misconfiguration (missing/invalid JWT_SECRET)
-                log.error("Failed to issue JWT: {}", ex.getMessage(), ex);
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(java.util.Map.of("error", "Server misconfigured (JWT)"));
-            }
+            // 3️⃣ Issue YOUR JWT (not Google’s)
+            String jwt = jwtService.generate(user);
 
-            // Set HttpOnly auth cookie (frontend should NOT store token)
-            ResponseCookie cookie = ResponseCookie.from(cookieName, jwt)
+            // 4️⃣ Set JWT as HTTP-only cookie
+            ResponseCookie cookie = ResponseCookie.from("AUTH_TOKEN", jwt)
                     .httpOnly(true)
-                    .secure(cookieSecure)
+                    .secure(false) // set true in production (HTTPS)
                     .path("/")
-                    .maxAge(60 * 60 * 24 * 7) // 7 days
-                    .sameSite(cookieSameSite)
+                    .sameSite("Lax")
+                    .maxAge(Duration.ofDays(7))
                     .build();
 
-            // Return minimal, frontend-safe response (token can be omitted later)
-            return ResponseEntity
-                    .ok()
-                    .header("Set-Cookie", cookie.toString())
-                    .body(new AuthResponse(jwt, user));
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            // 5️⃣ Return minimal user info (NO TOKEN)
+            return ResponseEntity.ok(Map.of(
+                    "email", user.getEmail(),
+                    "name", user.getName(),
+                    "plan", user.getPlan().name()));
         } catch (RuntimeException ex) {
             log.error("Unexpected error in /auth/google: {}", ex.getMessage(), ex);
             return ResponseEntity

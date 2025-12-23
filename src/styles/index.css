@@ -461,3 +461,60 @@ tr.total {
     width: 420px;
     max-width: 92vw;
 }
+
+
+/* ============================= */
+/* Premium gating */
+/* ============================= */
+
+.premium-locked {
+    position: relative;
+    opacity: 0.85;
+    background: linear-gradient(135deg,
+            rgba(14, 165, 160, 0.08),
+            rgba(14, 165, 160, 0.02));
+}
+
+.lock-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: rgba(14, 165, 160, 0.15);
+    color: #0ea5a0;
+}
+
+/* ============================= */
+/* Upgrade page */
+/* ============================= */
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 6px 0;
+    font-size: 14px;
+}
+
+.feature-list li.muted {
+    color: #9ca3af;
+}
+
+.premium-highlight {
+    border: 2px solid #0ea5a0;
+    background: linear-gradient(135deg,
+            rgba(14, 165, 160, 0.08),
+            rgba(14, 165, 160, 0.02));
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0ea5a0;
+}

@@ -4,6 +4,7 @@ import PlanViewer from './components/PlanViewer'
 import Login from './pages/Login'
 import RequireAuth from './components/RequireAuth'
 import UserMenuDrawer from './components/UserMenuDrawer'
+import Upgrade from './pages/Upgrade'
 
 export default function App() {
     return (
@@ -51,6 +52,8 @@ export default function App() {
                 >
                     <Link to="/">Dashboard</Link>
                     <Link to="/plans">Plans</Link>
+                    <Link to="/upgrade">Upgrade</Link>
+
                 </nav>
                 <button
                     onClick={() => {
@@ -94,6 +97,9 @@ export default function App() {
                             </RequireAuth>
                         }
                     />
+
+                    <Route path="/upgrade" element={<Upgrade />} />
+
                 </Routes>
             </main>
         </div>

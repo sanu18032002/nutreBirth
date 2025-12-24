@@ -2,6 +2,9 @@ package com.nutreBirth.service.security;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -19,8 +22,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+
+    @Value("${app.auth.cookie-name:nb_auth}")
+    private String cookieName;
 
     public JwtAuthenticationFilter(
             JwtService jwtService,
@@ -35,20 +43,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
+        String requestUri = request.getRequestURI();
+        log.debug("JwtAuthenticationFilter processing request: {} {}", request.getMethod(), requestUri);
+
         String jwt = extractJwtFromCookie(request);
 
         // No token → continue (SecurityConfig decides if endpoint is protected)
         if (jwt == null) {
+            log.debug("No JWT cookie found for request: {}", requestUri);
             filterChain.doFilter(request, response);
             return;
         }
 
+        log.debug("JWT cookie found, attempting authentication for request: {}", requestUri);
+
         try {
             String userId = jwtService.getUserId(jwt);
+            log.debug("Successfully extracted userId from JWT: {}", userId);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 var userDetails = userDetailsService.loadUserByUsername(userId);
+                log.debug("Loaded user details for userId: {}", userId);
 
                 var authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -59,12 +75,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                log.debug("Authentication set successfully for userId: {}", userId);
+            } else {
+                log.debug("Authentication already exists in SecurityContext");
             }
 
+        } catch (io.jsonwebtoken.ExpiredJwtException ex) {
+            log.warn("Expired JWT token for request {}: {}", requestUri, ex.getMessage());
+            SecurityContextHolder.clearContext();
+        } catch (io.jsonwebtoken.MalformedJwtException ex) {
+            log.warn("Malformed JWT token for request {}: {}", requestUri, ex.getMessage());
+            SecurityContextHolder.clearContext();
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
+            log.warn("Invalid JWT signature for request {}: {}", requestUri, ex.getMessage());
+            SecurityContextHolder.clearContext();
+        } catch (org.springframework.security.core.userdetails.UsernameNotFoundException ex) {
+            log.warn("User not found during JWT authentication for request {}: {}", requestUri, ex.getMessage());
+            SecurityContextHolder.clearContext();
         } catch (Exception ex) {
-            // Invalid or expired token
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            log.error("Unexpected error during JWT authentication for request {}: {}", requestUri, ex.getMessage(), ex);
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
@@ -79,7 +109,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
 
         for (Cookie cookie : cookies) {
-            if ("AUTH_TOKEN".equals(cookie.getName())) {
+            if (cookieName.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

@@ -53,48 +53,71 @@ public class AuthController {
 
     @PostMapping(value = "/google", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginWithGoogle(@RequestBody GoogleLoginRequest request, HttpServletResponse response) {
+        log.info("POST /auth/google endpoint called");
 
         try {
+            if (request == null || request.getIdToken() == null || request.getIdToken().isBlank()) {
+                log.error("Login request missing idToken");
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Map.of("error", "Missing idToken"));
+            }
+
+            log.debug("Attempting to verify Google ID token");
             // Verify Google ID token (CRITICAL)
             Payload payload;
             try {
                 payload = googleTokenVerifier.verify(request.getIdToken());
             } catch (RuntimeException ex) {
-                log.warn("Google auth failed during token verification: {}", ex.getMessage());
+                log.warn("Google auth failed during token verification: {}", ex.getMessage(), ex);
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(java.util.Map.of("error", "Google authentication failed"));
+                        .body(Map.of("error", "Google authentication failed"));
             }
 
             String email = payload.getEmail();
             String name = (String) payload.get("name");
             String picture = (String) payload.get("picture");
 
+            log.debug("Google token verified for email: {}", email);
+
             // Find or create user
             User user = userRepository.findByEmail(email)
                     .orElseGet(() -> {
+                        log.info("Creating new user for email: {}", email);
                         User u = new User();
                         u.setEmail(email);
                         u.setName(name);
                         u.setPictureUrl(picture);
                         u.setPlan(PlanType.FREE); // default
-                        return userRepository.save(u);
+                        User savedUser = userRepository.save(u);
+                        log.info("New user created with id: {}", savedUser.getId());
+                        return savedUser;
                     });
 
-            // Issue YOUR JWT (not Google’s)
+            if (user.getId() != null) {
+                log.debug("Existing user found with id: {}", user.getId());
+            }
+
+            // Issue YOUR JWT (not Google's)
+            log.debug("Generating JWT for user: {}", email);
             String jwt = jwtService.generate(user);
 
             // Set JWT as HTTP-only cookie
-            ResponseCookie cookie = ResponseCookie.from("AUTH_TOKEN", jwt)
+            log.debug("Setting HTTP-only cookie: {} (secure={}, sameSite={})", cookieName, cookieSecure, cookieSameSite);
+            ResponseCookie cookie = ResponseCookie.from(cookieName, jwt)
                     .httpOnly(true)
-                    .secure(false) // set true in production (HTTPS)
+                    .secure(cookieSecure) // set true in production (HTTPS)
                     .path("/")
-                    .sameSite("Lax")
+                    .sameSite(cookieSameSite)
                     .maxAge(Duration.ofDays(7))
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            log.info("User {} logged in successfully with plan: {}", email, user.getPlan());
 
             // Return minimal user info (NO TOKEN)
             return ResponseEntity.ok(Map.of(
@@ -106,23 +129,34 @@ public class AuthController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(java.util.Map.of("error", "Unexpected server error"));
+                    .body(Map.of("error", "Unexpected server error"));
         }
     }
 
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> logout() {
-        ResponseCookie cookie = ResponseCookie.from(cookieName, "")
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .maxAge(0)
-                .sameSite(cookieSameSite)
-                .build();
+        log.info("POST /auth/logout endpoint called");
 
-        return ResponseEntity
-                .ok()
-                .header("Set-Cookie", cookie.toString())
-                .body(java.util.Map.of("ok", true));
+        try {
+            log.debug("Clearing authentication cookie: {}", cookieName);
+            ResponseCookie cookie = ResponseCookie.from(cookieName, "")
+                    .httpOnly(true)
+                    .secure(cookieSecure)
+                    .path("/")
+                    .maxAge(0)
+                    .sameSite(cookieSameSite)
+                    .build();
+
+            log.info("User logged out successfully");
+            return ResponseEntity
+                    .ok()
+                    .header("Set-Cookie", cookie.toString())
+                    .body(Map.of("ok", true));
+        } catch (Exception ex) {
+            log.error("Error during logout: {}", ex.getMessage(), ex);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Logout failed"));
+        }
     }
 }

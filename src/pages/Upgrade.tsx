@@ -1,12 +1,17 @@
 import React from 'react'
 
 async function handleUpgrade() {
-  const res = await fetch('/payment/create-order', {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+  const res = await fetch(`${baseUrl}/payment/create-order`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
+    credentials: 'include', // Send HTTP-only cookies
   })
+
+  if (!res.ok) {
+    const error = await res.json()
+    alert(`Payment error: ${error.error || 'Failed to create order'}`)
+    return
+  }
 
   const order = await res.json()
 

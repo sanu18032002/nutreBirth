@@ -8,6 +8,7 @@ import planSeedData from '../db/plan_seed.json'
 import { calcBMR, calcTDEE } from '../utils/calcTargets'
 import { Bar } from 'react-chartjs-2'
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import PremiumGate from '../components/PremiumGate'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale)
 
@@ -272,14 +273,16 @@ export default function Dashboard() {
             </section>
 
             {/* Full plan */}
-            {recommendedPlan && (
-                <div className="mt-5">
-                    <FullPlanTable
-                        meals={recommendedPlan.meals}
-                        kcal={recommendedPlan.calories}
-                    />
-                </div>
-            )}
+            <PremiumGate featureName="Full diet plan">
+                {recommendedPlan && (
+                    <div className="mt-5">
+                        <FullPlanTable
+                            meals={recommendedPlan.meals}
+                            kcal={recommendedPlan.calories}
+                        />
+                    </div>
+                )}
+            </PremiumGate>
 
             {showProfileModal && (
                 <ProfileModal

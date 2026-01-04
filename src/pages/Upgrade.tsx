@@ -1,41 +1,62 @@
 import React from 'react'
-
-async function handleUpgrade() {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
-  const res = await fetch(`${baseUrl}/payment/create-order`, {
-    method: 'POST',
-    credentials: 'include', // Send HTTP-only cookies
-  })
-
-  if (!res.ok) {
-    const error = await res.json()
-    alert(`Payment error: ${error.error || 'Failed to create order'}`)
-    return
-  }
-
-  const order = await res.json()
-
-  const options = {
-    key: order.key,
-    amount: order.amount,
-    currency: order.currency,
-    name: 'NutReBirth',
-    description: 'Premium Subscription',
-    order_id: order.orderId,
-    handler: function (response: any) {
-      // TEMP success (we’ll secure this next)
-      alert('Payment successful!')
-    },
-    theme: {
-      color: '#0ea5a0',
-    },
-  }
-
-  const rzp = new (window as any).Razorpay(options)
-  rzp.open()
-}
+import { useAuth } from '../auth/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function Upgrade() {
+  const { refreshUser } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleUpgrade() {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+
+    const res = await fetch(`${baseUrl}/payment/create-order`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      alert('Failed to create order')
+      return
+    }
+
+    const order = await res.json()
+
+    const options = {
+      key: order.key,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'NutReBirth',
+      description: 'Premium Subscription',
+      order_id: order.orderId,
+
+      handler: async function (response: any) {
+        const verifyRes = await fetch(`${baseUrl}/payment/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          }),
+        })
+
+        if (verifyRes.ok) {
+          await refreshUser()
+          alert('Premium activated 🎉')
+          navigate('/', { replace: true })
+        } else {
+          alert('Payment verification failed')
+        }
+      },
+
+      theme: { color: '#0ea5a0' },
+    }
+
+    const rzp = new (window as any).Razorpay(options)
+    rzp.open()
+  }
+
   return (
     <div style={{ maxWidth: 720, margin: '0 auto' }}>
       <h2>Upgrade to Premium</h2>

@@ -14,3 +14,12 @@ app:
     cookie-name: ${APP_AUTH_COOKIE_NAME:nb_auth}
     cookie-secure: ${APP_AUTH_COOKIE_SECURE:false}
     cookie-same-site: ${APP_AUTH_COOKIE_SAME_SITE:Lax}
+
+razorpay:
+  key-id: rzp_test_RvWi08hpiUWWFU
+  key-secret: Ayjd4M7emZCvV8m1DPgfsfQm
+
+logging:
+  level:
+    com.nutreBirth: DEBUG
+    org.springframework.security: DEBUG

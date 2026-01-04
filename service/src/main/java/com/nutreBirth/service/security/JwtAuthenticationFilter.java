@@ -94,6 +94,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
         } catch (Exception ex) {
             log.error("Unexpected error during JWT authentication for request {}: {}", requestUri, ex.getMessage(), ex);
+            // Invalid or expired token - just clear auth and continue
+            // Let SecurityConfig decide if endpoint requires authentication
             SecurityContextHolder.clearContext();
         }
 

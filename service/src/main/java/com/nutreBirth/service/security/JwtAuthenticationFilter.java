@@ -2,6 +2,7 @@ package com.nutreBirth.service.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,6 +22,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+
+    @Value("${app.auth.cookie-name:nb_auth}")
+    private String cookieName;
 
     public JwtAuthenticationFilter(
             JwtService jwtService,
@@ -62,9 +66,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception ex) {
-            // Invalid or expired token
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            // Invalid or expired token - just clear auth and continue
+            // Let SecurityConfig decide if endpoint requires authentication
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
@@ -79,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
 
         for (Cookie cookie : cookies) {
-            if ("AUTH_TOKEN".equals(cookie.getName())) {
+            if (cookieName.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

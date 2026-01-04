@@ -86,11 +86,11 @@ public class AuthController {
             String jwt = jwtService.generate(user);
 
             // Set JWT as HTTP-only cookie
-            ResponseCookie cookie = ResponseCookie.from("AUTH_TOKEN", jwt)
+            ResponseCookie cookie = ResponseCookie.from(cookieName, jwt)
                     .httpOnly(true)
-                    .secure(false) // set true in production (HTTPS)
+                    .secure(cookieSecure) // set true in production (HTTPS)
                     .path("/")
-                    .sameSite("Lax")
+                    .sameSite(cookieSameSite)
                     .maxAge(Duration.ofDays(7))
                     .build();
 

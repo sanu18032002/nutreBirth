@@ -19,3 +19,7 @@ razorpay:
   key-id: rzp_test_xxxxx
   key-secret: xxxxx
 
+logging:
+  level:
+    com.nutreBirth: DEBUG
+    org.springframework.security: DEBUG

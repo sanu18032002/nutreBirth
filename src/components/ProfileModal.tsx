@@ -4,10 +4,11 @@ import type { UserProfile } from '../types'
 
 type Props = {
   onSaved?: (p: UserProfile) => void
+  onClose?: () => void
   initialProfile?: UserProfile
 }
 
-export default function ProfileModal({ onSaved, initialProfile }: Props) {
+export default function ProfileModal({ onSaved, onClose, initialProfile }: Props) {
   const [heightCm, setHeightCm] = useState<number>(initialProfile?.heightCm ?? 170)
   const [weightKg, setWeightKg] = useState<number>(initialProfile?.weightKg ?? 70)
   const [age, setAge] = useState<number>(initialProfile?.age ?? 30)
@@ -16,7 +17,7 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
     initialProfile?.activityLevel ?? 'moderate'
   )
   const [goal, setGoal] = useState<'maintain' | 'build' | 'lose'>(
-    initialProfile?.proteinTargetG ? 'build' : 'build'
+    initialProfile?.goal ?? 'build'
   )
   const [dietType, setDietType] = useState<'vegetarian' | 'non-vegetarian'>(
     initialProfile?.dietType ?? 'vegetarian'
@@ -25,12 +26,13 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
 
   useEffect(() => {
     if (initialProfile) {
-      setHeightCm(initialProfile.heightCm ?? heightCm)
-      setWeightKg(initialProfile.weightKg ?? weightKg)
-      setAge(initialProfile.age ?? age)
-      setSex(initialProfile.sex ?? sex)
-      setActivity(initialProfile.activityLevel ?? activity)
-      setDietType(initialProfile.dietType ?? dietType)
+      setHeightCm(initialProfile.heightCm ?? 170)
+      setWeightKg(initialProfile.weightKg ?? 70)
+      setAge(initialProfile.age ?? 30)
+      setSex(initialProfile.sex ?? 'male')
+      setActivity(initialProfile.activityLevel ?? 'moderate')
+      setGoal(initialProfile.goal ?? 'build')
+      setDietType(initialProfile.dietType ?? 'vegetarian')
     }
   }, [initialProfile])
 
@@ -49,6 +51,7 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
       age,
       sex,
       activityLevel: activity,
+      goal,
       calorieTarget: undefined,
       proteinTargetG,
       dietType,
@@ -69,11 +72,13 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
         placeItems: 'center',
         zIndex: 1000,
       }}
+      onClick={onClose}
     >
       <form
         onSubmit={handleSave}
         className="card"
         style={{ width: 420, maxWidth: '90%' }}
+        onClick={(e) => e.stopPropagation()}
       >
         <h3>Set your profile</h3>
 
@@ -179,7 +184,7 @@ export default function ProfileModal({ onSaved, initialProfile }: Props) {
           className="flex"
           style={{ justifyContent: 'flex-end', gap: 12, marginTop: 16 }}
         >
-          <button type="button">Cancel</button>
+          <button type="button" onClick={onClose}>Cancel</button>
           <button type="submit" className="primary" disabled={saving}>
             {saving ? 'Saving…' : 'Save'}
           </button>

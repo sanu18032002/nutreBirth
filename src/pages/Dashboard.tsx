@@ -5,7 +5,7 @@ import ProgressCard from '../components/ProgressCard'
 import ProfileModal from '../components/ProfileModal'
 import FullPlanTable from '../components/FullPlanTable'
 import planSeedData from '../db/plan_seed.json'
-import { calcBMR, calcTDEE } from '../utils/calcTargets'
+import { calcBMR, calcTDEE, calcCalorieTarget, calcProteinTarget, Goal } from '../utils/calcTargets'
 import { Bar } from 'react-chartjs-2'
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import PremiumGate from '../components/PremiumGate'
@@ -17,7 +17,13 @@ export default function Dashboard() {
     const [todayLogs, setTodayLogs] = useState<Meal[]>([])
     const [foods, setFoods] = useState<FoodItem[]>([])
     const [showProfileModal, setShowProfileModal] = useState(false)
-    const [targets, setTargets] = useState({ bmr: 0, tdee: 0, protein: 0 })
+    const [targets, setTargets] = useState({
+        bmr: 0,
+        tdee: 0,
+        calorieTarget: 0,
+        protein: 0,
+        goal: 'build' as Goal,
+    })
     const [recommendedPlan, setRecommendedPlan] = useState<DietPlan | null>(null)
 
     const seed = planSeedData as unknown as PlanSeed
@@ -74,6 +80,7 @@ export default function Dashboard() {
     }
 
     function computeAndSetTargets(p: UserProfile) {
+        const goal = p.goal ?? 'build'
         const bmr = calcBMR(
             p.weightKg,
             p.heightCm,
@@ -81,27 +88,27 @@ export default function Dashboard() {
             p.sex ?? 'male'
         )
         const tdee = calcTDEE(bmr, p.activityLevel ?? 'moderate')
-        const proteinDefault = Math.round(p.weightKg * 1.6)
-        const protein = Math.round(p.proteinTargetG ?? proteinDefault)
+        const calorieTarget = calcCalorieTarget(tdee, bmr, goal)
+        const protein = p.proteinTargetG ?? calcProteinTarget(p.weightKg, goal)
 
-        setTargets({ bmr, tdee, protein })
+        setTargets({ bmr, tdee, calorieTarget, protein, goal })
 
         db.profile
-            .put({ ...p, calorieTarget: tdee, proteinTargetG: protein })
+            .put({ ...p, calorieTarget, proteinTargetG: protein, goal })
             .catch(() => { })
 
-        selectRecommendedPlan(tdee, p.dietType ?? 'vegetarian')
+        selectRecommendedPlan(calorieTarget, p.dietType ?? 'vegetarian')
     }
 
-    function findClosestPlanForType(tdee: number, dietType: string) {
+    function findClosestPlanForType(calories: number, dietType: string) {
         const filtered = plans.filter((x) => x.type === dietType)
         if (filtered.length === 0) return null
 
         let best = filtered[0]
-        let bestDiff = Math.abs(filtered[0].calories - tdee)
+        let bestDiff = Math.abs(filtered[0].calories - calories)
 
         for (const p of filtered) {
-            const d = Math.abs(p.calories - tdee)
+            const d = Math.abs(p.calories - calories)
             if (d < bestDiff) {
                 best = p
                 bestDiff = d
@@ -110,19 +117,19 @@ export default function Dashboard() {
         return best
     }
 
-    function selectRecommendedPlan(tdee: number, dietType: string) {
-        const plan = findClosestPlanForType(tdee, dietType)
+    function selectRecommendedPlan(calories: number, dietType: string) {
+        const plan = findClosestPlanForType(calories, dietType)
         setRecommendedPlan(plan)
     }
 
     useEffect(() => {
-        if (profile && targets.tdee) {
+        if (profile && targets.calorieTarget) {
             selectRecommendedPlan(
-                targets.tdee,
+                targets.calorieTarget,
                 profile.dietType ?? 'vegetarian'
             )
         }
-    }, [profile, targets.tdee])
+    }, [profile, targets.calorieTarget])
 
     const consumedProtein = todayLogs
         .flatMap((l) => (l as any).items ?? [])
@@ -142,151 +149,141 @@ export default function Dashboard() {
 
 
     return (
-        <div>
+        <div style={{ paddingBottom: 24 }}>
             {/* Top cards */}
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: 16,
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: 20,
+                    marginTop: 8,
                 }}
             >
-                {/* <ProgressCard
-                    label="Protein (g)"
-                    value={consumedProtein}
-                    target={targets.protein}
-                    onClick={() => setShowProfileModal(true)}
-                /> */}
-
-                <div className="card">
-                    <span className="text-muted">Targets</span>
-                    <h3 style={{ marginTop: 6 }}>
-                        {targets.tdee} kcal / day
-                    </h3>
-                    <p className="text-muted">{targets.bmr} kcal (BMR)</p>
-                    <p className="text-muted">
-                        {targets.protein} g protein (target)
-                    </p>
-
-                    <div style={{ marginTop: 12 }}>
+                <div className="card" style={{ padding: '24px 28px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span className="text-muted" style={{ fontWeight: 600, textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.05em' }}>
+                                Daily Target
+                            </span>
+                            <span style={{
+                                fontSize: 11,
+                                fontWeight: 700,
+                                padding: '3px 8px',
+                                borderRadius: 999,
+                                background: targets.goal === 'lose' ? 'rgba(239, 68, 68, 0.12)' : targets.goal === 'build' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(14, 165, 233, 0.12)',
+                                color: targets.goal === 'lose' ? '#ef4444' : targets.goal === 'build' ? 'var(--brand)' : '#0ea5e9',
+                            }}>
+                                {targets.goal === 'lose' ? '📉 Weight Loss Deficit' : targets.goal === 'build' ? '💪 Muscle Building Surplus' : '⚖️ Maintenance'}
+                            </span>
+                        </div>
                         <button
                             className="primary"
                             onClick={() => setShowProfileModal(true)}
+                            style={{ padding: '6px 14px', fontSize: 13 }}
                         >
                             Edit Profile
                         </button>
+                    </div>
+
+                    <div style={{ marginTop: 12 }}>
+                        <h2 style={{ margin: 0, fontSize: '1.75rem', color: 'var(--brand)' }}>
+                            {targets.calorieTarget || targets.tdee} <span style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>kcal / day</span>
+                        </h2>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 28, marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)', flexWrap: 'wrap' }}>
+                        <div>
+                            <span className="text-muted" style={{ fontSize: 12 }}>Maintenance (TDEE)</span>
+                            <div style={{ fontWeight: 600, marginTop: 2 }}>{targets.tdee} kcal</div>
+                        </div>
+                        <div>
+                            <span className="text-muted" style={{ fontSize: 12 }}>Basal Rate (BMR)</span>
+                            <div style={{ fontWeight: 600, marginTop: 2 }}>{targets.bmr} kcal</div>
+                        </div>
+                        <div>
+                            <span className="text-muted" style={{ fontSize: 12 }}>Protein Target</span>
+                            <div style={{ fontWeight: 600, marginTop: 2 }}>{targets.protein} g</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Recommended plan */}
-            <section className="mt-5">
-                <h3>Recommended plan</h3>
+            <section style={{ marginTop: 32 }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 16 }}>Recommended plan</h3>
 
                 {recommendedPlan ? (
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: 16,
-                            marginTop: 12,
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                            gap: 20,
                         }}
                     >
-                        <div className="card">
-                            <h4>{recommendedPlan.calories} kcal plan</h4>
-                            <p className="text-muted mt-2">
-                                Matches your estimated TDEE (
-                                {targets.tdee} kcal)
-                            </p>
-                            <p className="mt-2">
-                                Representative protein:{' '}
-                                <strong>
-                                    {recommendedPlan.meals.reduce(
-                                        (s, m) =>
-                                            s + (m.total?.protein ?? 0),
-                                        0
-                                    )}{' '}
-                                    g
-                                </strong>
-                            </p>
-                        </div>
-
-                        {/* <div className="card">
-                            <span className="text-muted">Visual</span>
-                            <div style={{ marginTop: 12 }}>
-                                <Bar
-                                    data={{
-                                        labels: ['Protein'],
-                                        datasets: [
-                                            {
-                                                label: 'Target',
-                                                data: [targets.protein],
-                                                backgroundColor: cssVar('--protein'),
-                                            },
-                                            {
-                                                label: 'Consumed',
-                                                data: [Math.round(consumedProtein)],
-                                                backgroundColor: cssVar('--consumed'),
-                                            },
-                                        ],
-                                    }}
-                                    options={{
-                                        indexAxis: 'y',
-                                        responsive: true,
-                                        maintainAspectRatio: false,
-
-                                        plugins: {
-                                            legend: { display: false },
-                                        },
-
-                                        scales: {
-                                            x: {
-                                                ticks: {
-                                                    color: cssVar('--text-muted'),
-                                                },
-                                                grid: {
-                                                    color: cssVar('--border'),
-                                                    display: false,
-                                                },
-                                            },
-                                            y: {
-                                                ticks: {
-                                                    color: cssVar('--text-muted'),
-                                                },
-                                                grid: {
-                                                    display: false,
-                                                },
-                                            },
-                                        },
-                                    }}
-                                />
-
-
+                        <div className="card" style={{ padding: '24px 28px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                <h4 style={{ fontSize: '1.2rem', margin: 0 }}>{recommendedPlan.calories} kcal plan</h4>
+                                <span style={{
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    padding: '4px 10px',
+                                    borderRadius: 999,
+                                    background: 'rgba(16, 185, 129, 0.12)',
+                                    color: 'var(--brand)',
+                                }}>
+                                    {recommendedPlan.type === 'vegetarian' ? '🌱 Vegetarian' : '🍗 Non-Vegetarian'}
+                                </span>
                             </div>
-                        </div> */}
+                            <p className="text-muted mt-2">
+                                Matches your goal target of <strong>{targets.calorieTarget || targets.tdee} kcal</strong> ({targets.goal === 'lose' ? 'deficit' : targets.goal === 'build' ? 'surplus' : 'maintenance'})
+                            </p>
+                            <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)', display: 'flex', gap: 28 }}>
+                                <div>
+                                    <span className="text-muted" style={{ fontSize: 12 }}>Representative protein</span>
+                                    <div style={{ fontWeight: 600, marginTop: 2 }}>
+                                        {recommendedPlan.meals.reduce(
+                                            (s, m) => s + (m.total?.protein ?? 0),
+                                            0
+                                        )}{' '}g
+                                    </div>
+                                </div>
+                                <div>
+                                    <span className="text-muted" style={{ fontSize: 12 }}>Meals</span>
+                                    <div style={{ fontWeight: 600, marginTop: 2 }}>
+                                        {recommendedPlan.meals.length} meals / day
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ) : (
-                    <p className="text-muted mt-2">
-                        Profile not set or no matching plan found.
-                    </p>
+                    <div className="card" style={{ padding: '24px 28px' }}>
+                        <p className="text-muted">
+                            Profile not set or no matching plan found.
+                        </p>
+                    </div>
                 )}
             </section>
 
             {/* Full plan */}
-            <PremiumGate featureName="Full diet plan">
-                {recommendedPlan && (
-                    <div className="mt-5">
-                        <FullPlanTable
-                            meals={recommendedPlan.meals}
-                            kcal={recommendedPlan.calories}
-                        />
-                    </div>
-                )}
-            </PremiumGate>
+            <section style={{ marginTop: 36 }}>
+                <PremiumGate featureName="Full diet plan">
+                    {recommendedPlan && (
+                        <div style={{ marginTop: 20 }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: 16 }}>Full Diet Plan Details</h3>
+                            <FullPlanTable
+                                meals={recommendedPlan.meals}
+                                kcal={recommendedPlan.calories}
+                            />
+                        </div>
+                    )}
+                </PremiumGate>
+            </section>
 
             {showProfileModal && (
                 <ProfileModal
                     onSaved={onProfileSaved}
+                    onClose={() => setShowProfileModal(false)}
                     initialProfile={profile ?? undefined}
                 />
             )}

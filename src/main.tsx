@@ -6,8 +6,9 @@ import './styles/index.css'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider } from './auth/AuthContext'
 
+const savedTheme = localStorage.getItem('theme')
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light'
+document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'dark' : 'light')
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''
 

@@ -98,6 +98,7 @@ export type UserProfile = {
     age?: number;
     sex?: 'male' | 'female' | 'other';
     activityLevel: 'sedentary' | 'light' | 'moderate' | 'active';
+    goal?: 'maintain' | 'build' | 'lose';
     calorieTarget?: number;
     proteinTargetG?: number;
     dietType?: 'vegetarian' | 'non-vegetarian';

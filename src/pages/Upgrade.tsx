@@ -30,6 +30,11 @@ export default function Upgrade() {
       order_id: order.orderId,
 
       handler: async function (response: any) {
+        // Restore scrolling in case Razorpay injected inline styles onto body/html
+        document.body.style.overflow = ''
+        document.body.style.position = ''
+        document.documentElement.style.overflow = ''
+
         const verifyRes = await fetch(`${baseUrl}/payment/verify`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -48,6 +53,14 @@ export default function Upgrade() {
         } else {
           alert('Payment verification failed')
         }
+      },
+
+      modal: {
+        ondismiss: function () {
+          document.body.style.overflow = ''
+          document.body.style.position = ''
+          document.documentElement.style.overflow = ''
+        },
       },
 
       theme: { color: '#0ea5a0' },

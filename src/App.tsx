@@ -1,4 +1,5 @@
-import { Link, Routes, Route } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Routes, Route, useLocation } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import PlanViewer from './components/PlanViewer'
 import Login from './pages/Login'
@@ -9,24 +10,39 @@ import { useAuth } from './auth/AuthContext'
 
 export default function App() {
     const { plan } = useAuth()
+    const location = useLocation()
+    const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+        return (document.documentElement.dataset.theme as 'light' | 'dark') || 'light'
+    })
+
+    // Ensure scrolling is always enabled across pages
+    useEffect(() => {
+        document.body.style.overflow = ''
+        document.body.style.position = ''
+        document.documentElement.style.overflow = ''
+    }, [location.pathname])
+
+    const toggleTheme = () => {
+        const next = theme === 'dark' ? 'light' : 'dark'
+        document.documentElement.dataset.theme = next
+        try {
+            localStorage.setItem('theme', next)
+        } catch {}
+        setTheme(next)
+    }
 
     return (
         <div className="app-root">
-            <header
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: 24,
-                }}
-            >
+            <header>
+                {/* Left corner: Logo + App name */}
                 <div
                     style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 12,
+                        flexShrink: 0,
                     }}
                 >
-                    {/* Logo */}
                     <div
                         style={{
                             height: 40,
@@ -42,41 +58,35 @@ export default function App() {
                     >
                         N
                     </div>
-
                     <h1>NutReBirth</h1>
                 </div>
 
-                <nav
-                    style={{
-                        marginLeft: 'auto',
-                        display: 'flex',
-                        gap: 16,
-                    }}
-                >
-                    <Link to="/">Dashboard</Link>
-                    <Link to="/plans">Plans</Link>
-                    {plan === 'FREE' && <Link to="/upgrade">Upgrade</Link>}
+                {/* Right corner: Nav + theme toggle + avatar */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                    <nav style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                        <Link to="/">Dashboard</Link>
+                        <Link to="/plans">Plans</Link>
+                        {plan === 'FREE' && <Link to="/upgrade">Upgrade</Link>}
+                    </nav>
 
-                </nav>
-                <button
-                    onClick={() => {
-                        const t = document.documentElement.dataset.theme
-                        document.documentElement.dataset.theme = t === 'dark' ? 'light' : 'dark'
-                    }}
-                    aria-label="Toggle theme"
-                    style={{
-                        border: 'none',
-                        background: 'transparent',
-                        cursor: 'pointer',
-                        fontSize: '1.5rem'
-                    }}
-                >
-                    {/* Simple moon/sun icon using emoji; replace with any icon library */}
-                    {document.documentElement.dataset.theme === 'dark' ? '🌙' : '☀️'}
-                </button>
+                    <button
+                        onClick={toggleTheme}
+                        aria-label="Toggle theme"
+                        style={{
+                            border: 'none',
+                            background: 'transparent',
+                            cursor: 'pointer',
+                            fontSize: '1.25rem',
+                            padding: '4px 8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        {theme === 'dark' ? '🌙' : '☀️'}
+                    </button>
 
-                <UserMenuDrawer />
-
+                    <UserMenuDrawer />
+                </div>
             </header>
 
             <main>

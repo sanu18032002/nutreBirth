@@ -21,14 +21,23 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
-      <div className="card" style={{ width: 360 }}>
-        <h2>Login to NutReBirth</h2>
-        <p className="text-muted mt-2">
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 'calc(100vh - 120px)',
+    }}>
+      <div className="card" style={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 8,
+      }}>
+        <h2 style={{ margin: 0 }}>Login to NutReBirth</h2>
+        <p className="text-muted" style={{ marginTop: 4 }}>
           Sign in with Google to continue
         </p>
-
-        <div className="mt-4">
+        <div style={{ marginTop: 16 }}>
           <GoogleLogin
             onSuccess={onSuccess}
             onError={() => alert('Google login failed')}

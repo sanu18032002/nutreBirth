@@ -18,3 +18,13 @@ export function calcProteinTarget(weightKg:number, goal:Goal='build') {
   const map: Record<Goal, number> = { maintain:1.2, build:1.6, lose:1.4 }
   return Math.round(weightKg * (map[goal] ?? 1.6))
 }
+
+export function calcCalorieTarget(tdee: number, bmr: number, goal: Goal = 'build') {
+  if (goal === 'lose') {
+    return Math.max(bmr, Math.round(tdee - 400))
+  }
+  if (goal === 'build') {
+    return Math.round(tdee + 300)
+  }
+  return tdee
+}

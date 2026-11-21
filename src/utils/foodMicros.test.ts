@@ -16,6 +16,12 @@ describe('foodMicros name matching', () => {
   it('matches via alias map for generic plan names', () => {
     const m = microsForFoodName('Greek Yogurt')
     expect(m).toBeTruthy()
+
+    expect(microsForFoodName('Fish (Salmon, grilled)')).toBeTruthy()
+    expect(microsForFoodName('Fish (grilled)')).toBeTruthy()
+    expect(microsForFoodName('Rajma (cooked)')).toBeTruthy()
+    expect(microsForFoodName('Soya Chunks (raw)')).toBeTruthy()
+    expect(microsForFoodName('Brown Rice (cooked)')).toBeTruthy()
   })
 })
 

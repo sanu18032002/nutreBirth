@@ -7,12 +7,19 @@ type FoodMicrosRow = Record<string, unknown>
 // Keys and values are normalized via normalizeFoodName().
 const NAME_ALIASES: Record<string, string> = {
   // Plans often use generic names; micros data may be more specific.
-  'paneer': 'paneer full fat',
-  'greek yogurt': 'greek yogurt low fat',
-  'whole eggs': 'whole eggs boiled',
-  'egg whites': 'egg whites boiled',
-  'chicken breast': 'chicken breast cooked',
-  'fish': 'atlantic salmon cooked',
+  'paneer': 'paneer',
+  'greek yogurt': 'greek yogurt',
+  'whole eggs': 'whole eggs',
+  'egg whites': 'egg whites',
+  'chicken breast': 'chicken breast',
+  'fish': 'atlantic salmon',
+  'salmon': 'atlantic salmon',
+  'white fish': 'white fish',
+  'soya chunks': 'soya chunks',
+  'rajma': 'rajma',
+  'rolled oats': 'rolled oats',
+  'oats': 'rolled oats',
+  'brown rice': 'brown rice',
 }
 
 function normalizeFoodName(name: string): string {
@@ -85,15 +92,19 @@ for (const r of rows) {
 export function microsForFoodName(name: string): Partial<PlanFoodItem> | undefined {
   const keyRaw = normalizeFoodName(name)
 
-  const alias = NAME_ALIASES[keyRaw]
-  const key = alias ? normalizeFoodName(alias) : keyRaw
-
-  // exact normalized match first
-  const exact = byName.get(key)
+  // 1. exact normalized match first
+  const exact = byName.get(keyRaw)
   if (exact) return exact
 
-  // fallback: strip common suffixes if present
-  const simplified = key
+  // 2. alias map
+  const alias = NAME_ALIASES[keyRaw]
+  if (alias) {
+    const aliasMatch = byName.get(normalizeFoodName(alias))
+    if (aliasMatch) return aliasMatch
+  }
+
+  // 3. fallback: strip common suffixes if present
+  const simplified = keyRaw
     .replace(/\braw\b/g, '')
     .replace(/\bcooked\b/g, '')
     .replace(/\bboiled\b/g, '')

@@ -35,3 +35,8 @@ build/
 ### mvn cmd ###
 mvnw.cmd
 mvnw
+
+### Local Database Files ###
+data/
+*.mv.db
+*.trace.db

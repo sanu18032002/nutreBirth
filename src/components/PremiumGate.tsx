@@ -19,19 +19,38 @@ export default function PremiumGate({
 
   return (
     <div className="card premium-locked">
-      <div className="lock-badge">🔒 Premium</div>
+      <div className="lock-badge">
+        <span>🔒 PREMIUM UNLOCK</span>
+      </div>
 
-      <h4>{featureName}</h4>
-      <p className="text-muted mt-2">
-        Unlock this feature by upgrading to Premium.
+      <h3 style={{ margin: '10px 0 8px', fontSize: '1.3rem', fontWeight: 700 }}>
+        Unlock {featureName}
+      </h3>
+
+      <p className="text-muted" style={{ maxWidth: 520, margin: '0 auto', fontSize: 14, lineHeight: 1.6 }}>
+        Upgrade to get full meal-by-meal portion details, complete macronutrient breakdowns, and micronutrient tracking tailored to your targets.
       </p>
 
-      <button
-        className="primary mt-3"
-        onClick={() => navigate('/upgrade')}
-      >
-        Upgrade to Premium
-      </button>
+      <div style={{ marginTop: 20 }}>
+        <button
+          className="primary"
+          style={{
+            padding: '10px 24px',
+            fontSize: '14px',
+            fontWeight: 600,
+            borderRadius: '8px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
+          }}
+          onClick={() => navigate('/upgrade')}
+        >
+          <span>Upgrade to Premium — ₹199</span>
+          <span>→</span>
+        </button>
+      </div>
     </div>
   )
 }

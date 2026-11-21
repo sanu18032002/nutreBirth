@@ -111,10 +111,35 @@ export type TrackProtocolData = {
         carbs: number;
         fat: number;
     };
+    refeedTargets?: {
+        calories: number;
+        protein: number;
+        carbs: number;
+        fat: number;
+        extraCarbsG: number;
+    };
     nutritionRules: NutritionRule[];
     exerciseRules: ExerciseRule[];
     mealPlans: MealProtocolItem[];
     workoutPlans: WorkoutProtocolItem[];
+}
+
+export type CheckInRecord = {
+    id: string;
+    date: string;
+    weightKg: number;
+    waistCm: number;
+    dietCompliance: number; // 1-5
+    trainingCompliance: number; // 1-5
+    hunger: 'Manageable' | 'Distracting' | 'Starving';
+    energy: 'Explosive' | 'Normal' | 'Drained';
+    sleep: 'Deep' | 'Interrupted' | 'Poor';
+    biofeedbackWarning: boolean;
+    photosUploaded?: boolean;
+    verdict: 'green' | 'blue' | 'orange';
+    verdictTitle: string;
+    verdictMessage: string;
+    weeksInDeficit: number;
 }
 
 export type IntakeDiagnostics = {
@@ -149,4 +174,7 @@ export type UserProfile = {
     intake?: IntakeDiagnostics;
     medicalConsultTime?: string;
     coachBooked?: boolean;
+    checkIns?: CheckInRecord[];
+    refeedActive?: boolean;
+    refeedDayEnabled?: boolean;
 }

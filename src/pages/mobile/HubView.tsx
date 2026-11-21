@@ -1,17 +1,40 @@
-import React from 'react'
+import { useState } from 'react'
 import Card from '../../components/common/Card'
 import RuleBadge from '../../components/common/RuleBadge'
 import { getProtocolData } from '../../services/protocolEngine'
-import type { TrackId, IntakeDiagnostics } from '../../types'
+import type { TrackId, IntakeDiagnostics, CheckInRecord } from '../../types'
 
 interface HubViewProps {
     trackId: TrackId
     intake?: IntakeDiagnostics
     onRetakeTriage?: () => void
+    onOpenCheckIn?: () => void
+    refeedActive?: boolean
+    refeedTargets?: {
+        calories: number
+        protein: number
+        carbs: number
+        fat: number
+        extraCarbsG: number
+    }
+    latestCheckIn?: CheckInRecord
 }
 
-export default function HubView({ trackId, intake, onRetakeTriage }: HubViewProps) {
+export default function HubView({
+    trackId,
+    intake,
+    onRetakeTriage,
+    onOpenCheckIn,
+    refeedActive = false,
+    refeedTargets,
+    latestCheckIn,
+}: HubViewProps) {
     const protocol = getProtocolData(trackId)
+    const [isRefeedDay, setIsRefeedDay] = useState(refeedActive)
+
+    const activeDailyTargets = (isRefeedDay && refeedTargets)
+        ? refeedTargets
+        : protocol.dailyTargets
 
     return (
         <div className="view-container">
@@ -51,8 +74,92 @@ export default function HubView({ trackId, intake, onRetakeTriage }: HubViewProp
             </header>
 
             <div className="content">
+                {/* 1. Weekly Check-In Trigger Card */}
+                {onOpenCheckIn && (
+                    <div
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 255, 136, 0.08))',
+                            border: '1px solid rgba(0, 212, 255, 0.35)',
+                            borderRadius: 14,
+                            padding: '12px 14px',
+                            marginBottom: 16,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 10,
+                        }}
+                    >
+                        <div>
+                            <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+                                🔔 Weekly Check-In Protocol
+                            </div>
+                            <div style={{ fontSize: 12, color: '#e5e7eb', marginTop: 2, fontWeight: 600 }}>
+                                {latestCheckIn
+                                    ? `Last Log: ${latestCheckIn.weightKg}kg • ${latestCheckIn.waistCm}cm (${latestCheckIn.verdictTitle})`
+                                    : 'Log fasted weight & navel waist metrics'}
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={onOpenCheckIn}
+                            className="btn-primary"
+                            style={{
+                                width: 'auto',
+                                padding: '8px 14px',
+                                fontSize: 11,
+                                margin: 0,
+                                flexShrink: 0,
+                            }}
+                        >
+                            {latestCheckIn ? 'Re-Check' : 'Start →'}
+                        </button>
+                    </div>
+                )}
+
+                {/* 2. Refeed State Banner & Toggle */}
+                {refeedActive && refeedTargets && (
+                    <div
+                        style={{
+                            background: isRefeedDay
+                                ? 'linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(41, 98, 255, 0.2))'
+                                : '#161b22',
+                            border: `1px solid ${isRefeedDay ? 'var(--accent-cyan)' : 'var(--border-color)'}`,
+                            borderRadius: 14,
+                            padding: '12px 14px',
+                            marginBottom: 16,
+                        }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase' }}>
+                                ⚡ 48-Hour High-Carb Refeed Mode
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setIsRefeedDay(!isRefeedDay)}
+                                style={{
+                                    background: isRefeedDay ? 'var(--accent-cyan)' : '#222',
+                                    color: isRefeedDay ? '#000' : 'var(--text-muted)',
+                                    border: 'none',
+                                    padding: '4px 10px',
+                                    borderRadius: 12,
+                                    fontSize: 10,
+                                    fontWeight: 800,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {isRefeedDay ? 'ACTIVE (Refeed)' : 'Toggle ON'}
+                            </button>
+                        </div>
+                        <p style={{ fontSize: 11, color: '#e5e7eb', margin: 0, lineHeight: 1.4 }}>
+                            {isRefeedDay
+                                ? `+${refeedTargets.extraCarbsG}g Carbs active to reset leptin and lower cortisol. Enjoy the extra rice and potatoes.`
+                                : 'Deficit day mode. Tap "Toggle ON" to switch your plate to weekend refeed targets.'}
+                        </p>
+                    </div>
+                )}
+
                 <div className="db-badge">
-                    Integrations: Master_Nutrition.xlsx & Exercise_DB.xlsx
+                    Integrations: Master_Nutrition.xlsx &amp; Exercise_DB.xlsx
                 </div>
 
                 {/* Daily Targets Summary Card */}
@@ -75,7 +182,7 @@ export default function HubView({ trackId, intake, onRetakeTriage }: HubViewProp
                                     letterSpacing: '0.8px',
                                 }}
                             >
-                                Daily Targets
+                                {isRefeedDay ? 'Refeed Day Targets (TDEE Maintenance)' : 'Daily Targets (Deficit Engine)'}
                             </div>
                             <div
                                 style={{
@@ -86,7 +193,7 @@ export default function HubView({ trackId, intake, onRetakeTriage }: HubViewProp
                                     marginTop: 4,
                                 }}
                             >
-                                {protocol.dailyTargets.calories.toLocaleString()}{' '}
+                                {activeDailyTargets.calories.toLocaleString()}{' '}
                                 <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 600 }}>
                                     Kcal
                                 </span>
@@ -94,59 +201,76 @@ export default function HubView({ trackId, intake, onRetakeTriage }: HubViewProp
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-green)' }}>
-                                P: {protocol.dailyTargets.protein}g
+                                P: {activeDailyTargets.protein}g
                             </div>
                             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-cyan)' }}>
-                                C: {protocol.dailyTargets.carbs}g
+                                C: {activeDailyTargets.carbs}g {isRefeedDay && refeedTargets ? `(+${refeedTargets.extraCarbsG}g)` : ''}
                             </div>
                             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-yellow)' }}>
-                                F: {protocol.dailyTargets.fat}g
+                                F: {activeDailyTargets.fat}g
                             </div>
                         </div>
                     </div>
                 </Card>
 
                 {/* Today's Nutrition Plan */}
-                <div className="section-title">Today's Nutrition Plan</div>
+                <div className="section-title">
+                    {isRefeedDay ? "Today's Nutrition Plan (Refeed Gram Weights)" : "Today's Nutrition Plan"}
+                </div>
                 <div style={{ marginBottom: 20 }}>
-                    {protocol.mealPlans.map((m, idx) => (
-                        <div
-                            key={idx}
-                            className="card"
-                            style={{
-                                padding: '14px',
-                                marginBottom: 10,
-                                borderLeft: '3px solid var(--accent-cyan)',
-                            }}
-                        >
+                    {protocol.mealPlans.map((m, idx) => {
+                        let displayedQty = m.qty
+                        if (isRefeedDay && refeedTargets) {
+                            if (m.qty.includes('Rice')) {
+                                displayedQty = displayedQty.replace(/100g Rice/, '220g Rice (High-Carb Refeed)')
+                            }
+                            if (m.qty.includes('Sweet Potato')) {
+                                displayedQty = displayedQty.replace(/200g Sweet Potato/, '300g Sweet Potato (Glycogen Spike)')
+                            }
+                            if (m.qty.includes('Quinoa')) {
+                                displayedQty = displayedQty.replace(/50g Quinoa/, '110g Quinoa (Carb Load)')
+                            }
+                        }
+
+                        return (
                             <div
+                                key={idx}
+                                className="card"
                                 style={{
-                                    fontSize: 10,
-                                    color: 'var(--accent-cyan)',
-                                    fontWeight: 800,
-                                    textTransform: 'uppercase',
+                                    padding: '14px',
+                                    marginBottom: 10,
+                                    borderLeft: `3px solid ${isRefeedDay ? 'var(--accent-cyan)' : 'var(--accent-cyan)'}`,
                                 }}
                             >
-                                {m.meal}
+                                <div
+                                    style={{
+                                        fontSize: 10,
+                                        color: 'var(--accent-cyan)',
+                                        fontWeight: 800,
+                                        textTransform: 'uppercase',
+                                    }}
+                                >
+                                    {m.meal}
+                                </div>
+                                <div style={{ fontSize: 14, fontWeight: 700, margin: '5px 0' }}>
+                                    {m.food}
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: 11,
+                                        color: 'var(--accent-green)',
+                                        fontWeight: 700,
+                                        marginBottom: 6,
+                                    }}
+                                >
+                                    ⚖️ {displayedQty}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                                    {m.macros}
+                                </div>
                             </div>
-                            <div style={{ fontSize: 14, fontWeight: 700, margin: '5px 0' }}>
-                                {m.food}
-                            </div>
-                            <div
-                                style={{
-                                    fontSize: 11,
-                                    color: 'var(--accent-green)',
-                                    fontWeight: 700,
-                                    marginBottom: 6,
-                                }}
-                            >
-                                ⚖️ {m.qty}
-                            </div>
-                            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                                {m.macros}
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
 
                 {/* Today's Workout Plan */}

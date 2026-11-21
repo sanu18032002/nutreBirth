@@ -16,13 +16,16 @@ import LogisticsView from './pages/mobile/LogisticsView'
 import CoachChatView from './pages/mobile/CoachChatView'
 import BookingPortalView from './pages/mobile/BookingPortalView'
 
-// Sub-Pages
+// Sub-Pages & Modals
 import PlansSubscriptionView from './pages/mobile/PlansSubscriptionView'
 import HelpSupportView from './pages/mobile/HelpSupportView'
+import WeeklyCheckInModal from './components/checkin/WeeklyCheckInModal'
 
-// DB & Types
+// DB, Engine & Types
 import { db, seedIfEmpty } from './db'
-import type { TrackId, IntakeDiagnostics, UserProfile } from './types'
+import { getProtocolData } from './services/protocolEngine'
+import type { CheckInEvaluationResult } from './services/checkInEngine'
+import type { TrackId, IntakeDiagnostics, CheckInRecord } from './types'
 
 type ScreenState =
     | 'login'
@@ -38,6 +41,17 @@ export default function App() {
     const [screen, setScreen] = useState<ScreenState>('main')
     const [activeTab, setActiveTab] = useState<TabId>('hub')
     const [activeTrack, setActiveTrack] = useState<TrackId>('athletic')
+    const [showCheckInModal, setShowCheckInModal] = useState(false)
+    const [refeedActive, setRefeedActive] = useState(false)
+    const [refeedTargets, setRefeedTargets] = useState<{
+        calories: number
+        protein: number
+        carbs: number
+        fat: number
+        extraCarbsG: number
+    } | undefined>(undefined)
+    const [latestCheckIn, setLatestCheckIn] = useState<CheckInRecord | undefined>(undefined)
+
     const [intakeData, setIntakeData] = useState<IntakeDiagnostics>({
         age: 28,
         sex: 'Male',
@@ -63,6 +77,13 @@ export default function App() {
                     }
                     if (profile.intake) {
                         setIntakeData(profile.intake)
+                    }
+                    if (profile.checkIns && profile.checkIns.length > 0) {
+                        const last = profile.checkIns[profile.checkIns.length - 1]
+                        setLatestCheckIn(last)
+                    }
+                    if (profile.refeedActive) {
+                        setRefeedActive(true)
                     }
                 }
             } catch (err) {
@@ -112,7 +133,25 @@ export default function App() {
         setActiveTab('hub')
     }
 
-    const isBottomNavVisible = screen === 'main'
+    const handleCheckInComplete = (record: CheckInRecord, result: CheckInEvaluationResult) => {
+        setLatestCheckIn(record)
+        if (result.refeedRecommended && result.refeedTargets) {
+            setRefeedActive(true)
+            setRefeedTargets(result.refeedTargets)
+        } else if (result.verdict === 'green') {
+            setRefeedActive(false)
+        }
+
+        db.profile.update('local', {
+            refeedActive: result.refeedRecommended,
+        }).catch(() => {})
+
+        setShowCheckInModal(false)
+        setActiveTab('hub')
+    }
+
+    const protocol = getProtocolData(activeTrack)
+    const isBottomNavVisible = screen === 'main' && !showCheckInModal
 
     return (
         <MobileFrame>
@@ -166,6 +205,10 @@ export default function App() {
                             trackId={activeTrack}
                             intake={intakeData}
                             onRetakeTriage={() => setScreen('programs')}
+                            onOpenCheckIn={() => setShowCheckInModal(true)}
+                            refeedActive={refeedActive}
+                            refeedTargets={refeedTargets}
+                            latestCheckIn={latestCheckIn}
                         />
                     )}
                     {activeTab === 'biometrics' && <BiometricsView />}
@@ -187,6 +230,22 @@ export default function App() {
             )}
             {screen === 'support' && (
                 <HelpSupportView onBack={() => setScreen('main')} />
+            )}
+
+            {/* 8. Weekly Check-In Modal Flow (5 Screens) */}
+            {showCheckInModal && (
+                <WeeklyCheckInModal
+                    onClose={() => setShowCheckInModal(false)}
+                    onComplete={handleCheckInComplete}
+                    prevWeightKg={latestCheckIn?.weightKg ?? (intakeData.weightKg || 75.0)}
+                    prevWaistCm={latestCheckIn?.waistCm ?? 84.0}
+                    currentCalories={protocol.dailyTargets.calories}
+                    currentProtein={protocol.dailyTargets.protein}
+                    currentCarbs={protocol.dailyTargets.carbs}
+                    currentFat={protocol.dailyTargets.fat}
+                    tdee={Math.round((intakeData.weightKg || 75) * 34)}
+                    weeksInDeficit={latestCheckIn?.weeksInDeficit ?? 4}
+                />
             )}
 
             {/* Persistent Bottom Navigation for In-App Tabs */}

@@ -1,0 +1,193 @@
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    color: #fff; 
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 800; 
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+    margin-top: 10px;
+    font-family: inherit;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: none;
+}
+
+.card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.styled-input, .styled-select {
+    width: 100%;
+    background: #161b22;
+    border: 1px solid #30363d;
+    padding: 16px;
+    border-radius: 12px;
+    color: #fff;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.styled-input:focus, .styled-select:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+}
+
+.select-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.select-card.active {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-cyan);
+    font-weight: 700;
+}
+
+/* Program Cards */
+.program-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--bg-card);
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 12px;
+}
+
+.program-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+}
+
+.program-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.program-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.program-info p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Chat UI */
+.chat-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.chat-ai {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-user {
+    background: var(--accent-blue);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    margin-left: auto;
+}
+
+.chat-input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background: var(--bg-base);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mic-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Data Sync Badges */
+.db-badge {
+    font-size: 10px;
+    font-family: monospace;
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-green);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    display: inline-block;
+    margin-bottom: 10px;
+}

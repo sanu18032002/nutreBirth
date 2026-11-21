@@ -1,0 +1,33 @@
+:root {
+    /* The NutReBirth Premium Palette */
+    --bg-base: #030508;
+    --bg-surface: #0a0f1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1f2937;
+    --border-color: #1f2937;
+    --text-main: #ffffff;
+    --text-muted: #9ca3af;
+    
+    --accent-cyan: #00D4FF;   
+    --accent-green: #00FF88;  
+    --accent-pink: #FF4081;   
+    --accent-yellow: #FFC107; 
+    --accent-blue: #2962FF; 
+}
+
+* { 
+    box-sizing: border-box; 
+}
+
+body {
+    background-color: #000;
+    background-image: radial-gradient(circle at 50% 0%, #0a1128 0%, #000 70%);
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
